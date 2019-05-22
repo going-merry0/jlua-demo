@@ -1,5 +1,7 @@
 # jlua-demo
 
+This is a demo for [jlua](https://github.com/hsiaosiyuan0/jlua), it's also made with jlua and Vue which means the `script` tag within Single File Components has a attribute `lang` with value `lua`, see this [source file](/src/views/AST.vue) to get a intuitive feeling.
+
 ## Project setup
 ```
 npm install
