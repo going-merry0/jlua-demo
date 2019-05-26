@@ -4,6 +4,7 @@
       class="editor" 
       v-model="code" 
       language="lua"
+      :amdRequire="amdRequire"
       :options="editorCfg"></monaco-editor>
     <vue-json-pretty
       class="json-viewer"
@@ -17,12 +18,6 @@
 <script lang="lua">
 local MonacoEditor = require('vue-monaco')
 local VueJsonPretty = require('vue-json-pretty')
-local compile = require('jlua/lib/js/compile')
-local lexer = require('jlua/lib/lexer')
-local Lexer = lexer.Lexer
-local Source = lexer.Source
-local Parser = require('jlua/lib/parser').Parser
-local YamlVisitor = require('jlua/lib/visitor').YamlVisitor
 
 local m = {
   data = function() 
@@ -46,17 +41,28 @@ local m = {
   methods = {
     handleClick = function() end,
 
-    compile = function(code) 
-      local src = Source.new(code, "stdin")
-      local lexer = Lexer.new(src)
-      local parser = Parser.new(lexer)
-      local chk = parser.parseChunk()
-      local v = YamlVisitor.new()
-      this.ast = v.visitChunk(chk)
-    end
+    compile = function(code)
+      local me = this;
+      fetch('http://localhost:8081/ast', {
+        method = 'post',
+        headers = {
+          ['Content-Type'] = 'application/json',
+        }
+        body = JSON.stringify({
+          code = me.code
+        })
+      }).then(function(response) 
+        return response.json()
+      end).then(function(resp) 
+        print(resp.data)
+        me.ast = resp.data
+      end)
+    end,
+
+    amdRequire = window.require
   },
 
-  mounted = function() 
+  mounted = function()
     this.code = [[local Person = class(function(name) 
   self.name = name
 end)

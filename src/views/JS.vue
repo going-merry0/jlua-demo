@@ -4,6 +4,7 @@
       class="editor" 
       v-model="code" 
       language="lua"
+      :amdRequire="amdRequire"
       :options="editorCfg"></monaco-editor>
     <monaco-editor 
       class="editor1" 
@@ -15,8 +16,6 @@
 
 <script lang="lua">
 local MonacoEditor = require('vue-monaco')
-local compile = require('jlua/lib/js/compile')
-
 local m = {
   data = function() 
     return {
@@ -38,9 +37,23 @@ local m = {
 
   methods = {
     compile = function(code) 
-      local out = compile(code, "stdin")
-      this.js = out.code
-    end
+      local me = this;
+      fetch('http://localhost:8081/js', {
+        method = 'post',
+        headers = {
+          ['Content-Type'] = 'application/json',
+        }
+        body = JSON.stringify({
+          code = me.code
+        })
+      }).then(function(response) 
+        return response.json()
+      end).then(function(resp)
+        me.js = resp.data
+      end)
+    end,
+
+    amdRequire = window.require
   },
 
   mounted = function() 

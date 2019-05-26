@@ -1,4 +1,4 @@
-const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+const path = require("path");
 
 module.exports = {
   chainWebpack: config => {
@@ -19,6 +19,15 @@ module.exports = {
       .loader("jlua/lib/js/loader")
       .end();
 
-    config.plugin("monaco").use(MonacoWebpackPlugin);
+    config.plugin("html").tap(args => {
+      args[0].template = path.resolve(__dirname, "index.html");
+      return args;
+    });
+
+    config.externals([
+      {
+        "monaco-editor": "monaco"
+      }
+    ]);
   }
 };
