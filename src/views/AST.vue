@@ -104,6 +104,7 @@ return m
 .json-viewer {
   width: 49%;
   height: calc(100vh - 30px);
+  overflow: scroll;
 }
 </style>
 
