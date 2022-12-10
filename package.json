@@ -9,7 +9,7 @@
   "dependencies": {
     "core-js": "^2.6.5",
     "cors": "^2.8.5",
-    "express": "^4.17.0",
+    "express": "^4.17.3",
     "jlua": "file:../jlua",
     "vue": "^2.6.10",
     "vue-json-pretty": "^1.6.0",
